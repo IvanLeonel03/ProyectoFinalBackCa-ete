@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Ecommerce</title>
+    <link rel="stylesheet" href="/css/style.css">
+</head>
+<body>
+    <nav class="navbar">
+        <div class="nav-container">
+            <a href="/" class="nav-logo">🛒 Ecommerce</a>
+            <div class="nav-links">
+                <a href="/products">Productos</a>
+                <!-- USA EL MISMO CART ID EN TODOS LADOS -->
+                <a href="/carts/68e143d384b21d7415c60298" id="cart-link">
+                    Mi Carrito 
+                    <span id="cart-counter" style="background: #e74c3c; color: white; padding: 2px 6px; border-radius: 10px; font-size: 0.8rem; margin-left: 5px;"></span>
+                </a>
+            </div>
+        </div>
+    </nav>
+
+    <main class="main-content">
+        {{{body}}}
+    </main>
+
+    <footer class="footer">
+        <p>&copy; 2024 Ecommerce. Todos los derechos reservados.</p>
+    </footer>
+
+    <script>
+        // Script para actualizar el contador del carrito
+        async function updateCartCounter() {
+            try {
+                const cartId = '68e143d384b21d7415c60298';
+                const response = await fetch(`/api/carts/${cartId}`);
+                const result = await response.json();
+                
+                if (result.status === 'success') {
+                    const totalItems = result.payload.products.reduce((total, item) => total + item.quantity, 0);
+                    const cartCounter = document.getElementById('cart-counter');
+                    
+                    if (cartCounter) {
+                        cartCounter.textContent = totalItems;
+                        cartCounter.style.display = totalItems > 0 ? 'inline-block' : 'none';
+                    }
+                }
+            } catch (error) {
+                console.error('Error actualizando contador:', error);
+            }
+        }
+
+        // Actualizar contador cuando se carga la página
+        document.addEventListener('DOMContentLoaded', function() {
+            updateCartCounter();
+        });
+    </script>
+</body>
+</html>
